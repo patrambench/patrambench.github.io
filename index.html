@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Patram-Bench: Multilingual Indian Document Image Understanding Benchmark</title>
+  <meta name="description"
+    content="Patram-Bench: A Multi-task, Multi-domain and Multi-lingual Benchmark for Indian Document Image Understanding. ICDAR 2026." />
+  <meta property="og:title" content="Patram-Bench — ICDAR 2026" />
+  <meta property="og:description"
+    content="The first large-scale multilingual benchmark for Indian document understanding, comprising 53k documents, 23 languages, 52 tasks, and 2.4M QA annotations." />
+  <meta property="og:type" content="website" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="static/images/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="static/images/logo.png">
+  <link rel="shortcut icon" href="static/images/logo.png">
+
+  <!-- Bulma and FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX for Math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body);"></script>
+
+  <style>
+    /* ── CSS Custom Variables (Design System) ── */
+    :root {
+      --primary: #4f46e5;         /* Indigo 600 */
+      --primary-dark: #3730a3;    /* Indigo 800 */
+      --primary-light: #e0e7ff;   /* Indigo 100 */
+      --accent: #f59e0b;          /* Saffron Gold */
+      --accent-dark: #d97706;     /* Saffron Dark */
+      --accent-light: #fef3c7;    /* Saffron Light */
+      --bg-dark: #0f172a;         /* Slate 900 */
+      --bg-dark-accent: #1e293b;  /* Slate 800 */
+      --bg-light: #fafafa;        /* Very Light Gray */
+      --text-dark: #1e293b;       /* Slate 800 */
+      --text-light: #f8fafc;      /* Slate 50 */
+      --text-muted: #64748b;      /* Slate 500 */
+      --border-color: #e2e8f0;    /* Slate 200 */
+      --font-title: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    /* ── Base Reset ── */
+    body {
+      font-family: var(--font-body);
+      color: var(--text-dark);
+      background-color: #ffffff;
+      line-height: 1.7;
+    }
+
+    .title, .subtitle, h1, h2, h3, h4, h5 {
+      font-family: var(--font-title);
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .has-text-accent {
+      color: var(--accent) !important;
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      font-weight: 500;
+    }
+    
+    .navbar-item {
+      transition: color 0.2s ease;
+    }
+    
+    .navbar-item:hover {
+      color: var(--primary) !important;
+    }
+
+    /* ── Hero / Header ── */
+    .publication-header {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #1e1b4b 100%);
+      color: var(--text-light);
+      padding: 5rem 1.5rem 4rem;
+      position: relative;
+    }
+    
+    .publication-header .title {
+      color: var(--text-light);
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    
+    .publication-header .subtitle {
+      color: #94a3b8;
+      font-size: 1.3rem;
+      font-weight: 500;
+      margin-top: 1rem !important;
+    }
+
+    .publication-venue {
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .author-block {
+      display: inline-block;
+      margin: 0.3rem 0.6rem;
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+
+    .author-block a {
+      color: #e2e8f0;
+      border-bottom: 1px dotted #64748b;
+      transition: all 0.2s ease;
+    }
+
+    .author-block a:hover {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .affiliations {
+      margin-top: 1.25rem;
+      font-size: 0.95rem;
+      color: #cbd5e1;
+    }
+
+    .affiliations span {
+      margin: 0 0.75rem;
+    }
+
+    .author-notes {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 0.5rem;
+    }
+
+    .header-buttons {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .header-buttons .button {
+      font-family: var(--font-title);
+      font-weight: 600;
+      border-radius: 9999px;
+      padding: 0.6rem 1.5rem;
+      height: auto;
+      transition: all 0.2s ease;
+    }
+
+    .button.is-primary-accent {
+      background-color: var(--accent);
+      color: var(--bg-dark);
+      border: none;
+    }
+
+    .button.is-primary-accent:hover {
+      background-color: var(--accent-dark);
+      color: var(--bg-dark);
+      transform: translateY(-1px);
+    }
+
+    .button.is-outline-white {
+      background-color: transparent;
+      color: var(--text-light);
+      border: 2px solid #475569;
+    }
+
+    .button.is-outline-white:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+      border-color: #e2e8f0;
+      transform: translateY(-1px);
+    }
+
+    /* ── Sections ── */
+    .section {
+      padding: 5rem 1.5rem;
+    }
+    
+    .section-alt {
+      background-color: var(--bg-light);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .section-title {
+      font-size: 2.2rem;
+      margin-bottom: 3rem;
+      position: relative;
+      padding-bottom: 0.75rem;
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background-color: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* ── Teaser ── */
+    .teaser {
+      padding: 3rem 1.5rem;
+      background-color: #ffffff;
+    }
+
+    .teaser-card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
+      padding: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+
+    .teaser-card img {
+      width: 100%;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .fig-caption {
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      color: #475569;
+      line-height: 1.6;
+      text-align: justify;
+    }
+
+    .fig-caption strong {
+      color: var(--bg-dark);
+    }
+
+    /* ── Stats Grid ── */
+    .stats-container {
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+      height: 100%;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      border-color: var(--primary-light);
+    }
+
+    .stat-num {
+      font-family: var(--font-title);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+
+    .stat-lbl {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.5rem;
+    }
+
+    /* ── Content Formatting ── */
+    .content-box {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+    }
+
+    .motivation-box {
+      background: linear-gradient(135deg, var(--primary-light) 0%, #fffbeb 100%);
+      border: 1px solid #c7d2fe;
+      border-radius: 16px;
+      padding: 2rem 2.5rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .motivation-box p {
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: #312e81;
+    }
+
+    .motivation-box strong {
+      color: var(--primary-dark);
+    }
+
+    /* ── Figures ── */
+    .figure-container {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      margin-bottom: 2.5rem;
+    }
+
+    .figure-container img {
+      border-radius: 8px;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* ── Custom Cards ── */
+    .feature-card {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      background: #ffffff;
+      height: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .feature-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .feature-card h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Tables ── */
+    .table-container {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow-x: auto;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+      background: #ffffff;
+      margin-bottom: 2rem;
+    }
+
+    .table {
+      font-size: 0.9rem;
+      margin-bottom: 0 !important;
+    }
+
+    .table th {
+      background-color: var(--bg-dark);
+      color: var(--text-light) !important;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      vertical-align: middle !important;
+      text-align: center !important;
+    }
+
+    .table th:first-child {
+      text-align: left !important;
+    }
+
+    .table td {
+      vertical-align: middle !important;
+      text-align: center !important;
+    }
+
+    .table td:first-child {
+      text-align: left !important;
+      font-weight: 500;
+    }
+
+    .table tr.ours-row td {
+      font-weight: 700;
+      background-color: #fef3c7 !important; /* light gold */
+      color: #92400e !important;
+    }
+
+    .table tr.group-header-row td {
+      background-color: #f1f5f9 !important;
+      font-weight: 700;
+      text-align: left !important;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .table-toggle-btn {
+      margin: 1rem auto;
+      display: block;
+      font-family: var(--font-title);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    /* ── BibTeX ── */
+    .bibtex-wrap {
+      background: #0f172a;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      border: 1px solid #1e293b;
+    }
+
+    .bibtex-bar {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+    }
+
+    .bibtex-bar button {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #f1f5f9;
+      border-radius: 6px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: var(--font-title);
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .bibtex-bar button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
+    pre.bibtex-code {
+      padding: 1.5rem;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      background: #0f172a;
+      color: #e2e8f0;
+      margin: 0;
+      font-family: var(--font-mono);
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    /* ── Footer ── */
+    footer.footer {
+      background-color: var(--bg-dark);
+      color: #94a3b8;
+      border-top: 1px solid #1e293b;
+      padding: 4rem 1.5rem;
+    }
+
+    footer h4 {
+      color: var(--text-light) !important;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    footer a {
+      color: #e2e8f0;
+    }
+
+    footer a:hover {
+      color: var(--accent);
+    }
+
+    .footer-bottom {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid #1e293b;
+      font-size: 0.85rem;
+    }
+
+    /* ── Responsive adjustments ── */
+    @media (max-width: 768px) {
+      .publication-header .title {
+        font-size: 2rem;
+      }
+      .publication-header {
+        padding: 3rem 1.5rem 2.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar is-white is-fixed-top" role="navigation" aria-label="main navigation">
+    <div class="container">
+      <div class="navbar-brand">
+        <a class="navbar-item has-text-weight-bold" href="#" style="font-family: var(--font-title); font-size: 1.25rem;">
+          <img src="static/images/logo.png" alt="Logo" style="margin-right: 0.5rem; max-height: 2rem;">
+          Patram-Bench
+        </a>
+        <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div id="navMenu" class="navbar-menu">
+        <div class="navbar-end">
+          <a class="navbar-item" href="#abstract">Abstract</a>
+          <a class="navbar-item" href="#curation">Curation &amp; Pipeline</a>
+          <a class="navbar-item" href="#tasks">Tasks</a>
+          <a class="navbar-item" href="#results">Results</a>
+          <a class="navbar-item" href="#bibtex">BibTeX</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero / Header -->
+  <section class="hero publication-header" style="margin-top: 3.25rem;">
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <p class="publication-venue">ICDAR 2026</p>
+        
+        <h1 class="title">
+          Patram-Bench: A Multi-task, Multi-domain and Multi-lingual Benchmark for Indian Document Image Understanding
+        </h1>
+        
+        <p class="subtitle">
+          A Comprehensive Evaluation Protocol for Vision-Language Models in Diverse Document Ecosystems
+        </p>
+
+        <!-- Placeholders for Authors -->
+        <div class="publication-authors" style="margin-top: 2rem;">
+          <span class="author-block">
+            <a href="#">Anonymous Author 1</a><sup>1,*</sup>,
+          </span>
+          <span class="author-block">
+            <a href="#">Anonymous Author 2</a><sup>2,*</sup>,
+          </span>
+          <span class="author-block">
+            <a href="#">Anonymous Author 3</a><sup>1,†</sup>,
+          </span>
+          <span class="author-block">
+            <a href="#">Anonymous Author 4</a><sup>3,†</sup>,
+          </span>
+          <span class="author-block">
+            <a href="#">Anonymous Author 5</a><sup>1,2</sup>
+          </span>
+        </div>
+
+        <!-- Placeholders for Institutions -->
+        <div class="affiliations">
+          <span><sup>1</sup> Department of Artificial Intelligence &amp; Computer Science</span>
+          <span><sup>2</sup> Division of Electrical Engineering</span>
+          <span><sup>3</sup> Center for Indian Language Technologies</span>
+        </div>
+
+        <div class="author-notes">
+          <sup>*</sup> Equal contribution &nbsp;&nbsp;&nbsp;&nbsp; <sup>†</sup> Equal contribution / Project Leads
+        </div>
+
+        <!-- Links Buttons -->
+        <div class="header-buttons">
+          <a href="https://github.com/patrambench/patrambench" target="_blank" class="button is-outline-white">
+            <span class="icon"><i class="fab fa-github"></i></span>
+            <span>Code</span>
+          </a>
+          <a href="https://huggingface.co/datasets/patrambench/patrambench" target="_blank" class="button is-outline-white">
+            <span class="icon">🤗</span>
+            <span>HuggingFace Dataset</span>
+          </a>
+          <a href="#" class="button is-outline-white" style="opacity: 0.6; cursor: not-allowed;" title="Arxiv Paper Coming Soon">
+            <span class="icon"><i class="fas fa-file-pdf"></i></span>
+            <span>arXiv Paper (Soon)</span>
+          </a>
+          <a href="#" class="button is-primary-accent">
+            <span class="icon"><i class="fas fa-database"></i></span>
+            <span>Download Data</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Teaser Figure -->
+  <section class="teaser">
+    <div class="container is-max-desktop">
+      <div class="teaser-card">
+        <img src="static/images/teaser.png" alt="Patram-Bench teaser figure">
+        <p class="fig-caption">
+          <strong>A. Qualitative samples from Patram-Bench:</strong>
+          The top row presents relatively high-resource Indic languages, while the bottom row shows lower-resource languages. The examples span perception tasks (OCR, layout detection, parsing) and reasoning tasks (VQA, structured understanding), highlighting the multilingual and multi-task diversity of the benchmark.
+          <strong>B. Task-group wise radar comparison across representative models:</strong>
+          Performance varies significantly across task categories, with multilingual settings (Multilingual VQA) exhibiting pronounced degradation. Structured tasks such as forms, tables, and document parsing remain challenging across languages, underscoring the complexity of multilingual document intelligence.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abstract & Stats Grid -->
+  <section class="section section-alt" id="abstract">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="section-title">Abstract</h2>
+        </div>
+      </div>
+
+      <div class="content-box">
+        <div class="content has-text-justified">
+          <p>
+            With over 1.4 billion people and dozens of widely used scripts, India represents one of the world’s most linguistically and visually diverse document ecosystems. Yet document understanding benchmarks remain largely Western- and English-centric. Consequently, the robustness of modern vision–language models (VLMs) in multilingual and low-resource settings remains under-evaluated.
+          </p>
+          <p>
+            We introduce the first large-scale multilingual benchmark for Indian document understanding, comprising <strong>52,607 documents</strong> across <strong>23 languages</strong>, <strong>13 domains</strong>, <strong>71 document classes</strong>, and <strong>52 tasks</strong>, with over <strong>2.4M QA annotations</strong> across multiple tasks. The dataset captures diverse layouts, scripts, and visual conditions spanning governance, education, finance, archival, and informal content, among others. We additionally include synthetic multilingual charts, tables, and diagrams generated via <strong>Patram-Syn</strong>, an Indian persona-driven data generation pipeline with human validation.
+          </p>
+          <p>
+            The benchmark measures perception-level capabilities such as OCR, parsing, key information extraction, and layout detection, as well as reasoning-level capabilities including Document VQA with abstractive, multi-hop, and ambiguous questions. We further introduce targeted settings for cross-lingual, transliterated, and code-mixed VQA. We also propose two new evaluation metrics, Document Understanding Cross-Lingual Index (DUCLI) and Script Robustness Score (SRS), to quantify cross-lingual reasoning degradation and script robustness. Our benchmark exposes consistent weaknesses in both open-source and closed-source VLMs, particularly in low-resource languages, degraded scans, and layout-intensive settings, underscoring fundamental challenges in scalable multilingual document intelligence.
+          </p>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="columns is-multiline stats-container" style="margin-top: 3rem;">
+        <div class="column is-3-desktop is-6-tablet">
+          <div class="stat-card">
+            <div class="stat-num">52,607</div>
+            <div class="stat-lbl">Documents</div>
+          </div>
+        </div>
+        <div class="column is-3-desktop is-6-tablet">
+          <div class="stat-card">
+            <div class="stat-num">2.4M</div>
+            <div class="stat-lbl">QA Annotations</div>
+          </div>
+        </div>
+        <div class="column is-3-desktop is-6-tablet">
+          <div class="stat-card">
+            <div class="stat-num">23</div>
+            <div class="stat-lbl">Languages</div>
+          </div>
+        </div>
+        <div class="column is-3-desktop is-6-tablet">
+          <div class="stat-card">
+            <div class="stat-num">52</div>
+            <div class="stat-lbl">Different Tasks</div>
+          </div>
+        </div>
+        <div class="column is-4-desktop is-6-tablet">
+          <div class="stat-card">
+            <div class="stat-num">13</div>
+            <div class="stat-lbl">High-Level Domains</div>
+          </div>
+        </div>
+        <div class="column is-4-desktop is-6-tablet">
+          <div class="stat-card">
+            <div class="stat-num">71</div>
+            <div class="stat-lbl">Document Classes</div>
+          </div>
+        </div>
+        <div class="column is-4-desktop is-12-tablet">
+          <div class="stat-card">
+            <div class="stat-num">29</div>
+            <div class="stat-lbl">VLMs Evaluated</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Curation & Patram-Syn Pipeline -->
+  <section class="section" id="curation">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <h2 class="section-title">Benchmark Curation &amp; Data Pipeline</h2>
+          <p class="subtitle" style="margin-bottom: 3rem;">
+            A hybrid curation strategy combining native Indian documents and persona-driven synthetic data.
+          </p>
+        </div>
+      </div>
+
+      <!-- Real Document Collection -->
+      <div class="columns is-vcentered" style="margin-bottom: 4rem;">
+        <div class="column is-6">
+          <h3 class="title is-3" style="margin-bottom: 1.5rem;">Natively Sourced Indian Corpus</h3>
+          <p>
+            We curate a large-scale corpus of Indian PDF documents reflecting real-world document ecosystems.
+            Our sources span official governance portals, educational boards, listing corporations, and archival databases:
+          </p>
+          <ul style="margin-top: 1rem; list-style-type: square; padding-left: 1.5rem; line-height: 1.8;">
+            <li><strong>Governance &amp; Administrative:</strong> Government notifications, circulars, and forms sourced from the national portal.</li>
+            <li><strong>Educational Assets:</strong> Competitive examination papers, school textbooks, and university academic theses.</li>
+            <li><strong>Financial and Corporate:</strong> Annual business reports, tax filings, and regulatory filings from BSE &amp; NSE.</li>
+            <li><strong>Archival &amp; Cultural:</strong> Scan-rich regional newspapers, historic novels, advertisements, and recipe books.</li>
+          </ul>
+        </div>
+        <div class="column is-6">
+          <div class="figure-container">
+            <img src="static/images/data_taxonomy.jpg" alt="Patram-Bench Document Taxonomy">
+            <p class="fig-caption" style="font-size:0.8rem; text-align:center;">
+              <strong>Document domain and class distribution:</strong> Spans 13 domains and 71 document classes.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Synthetic Pipeline (Patram-Syn) -->
+      <div class="columns is-vcentered">
+        <div class="column is-6 order-2-mobile">
+          <div class="figure-container">
+            <img src="static/images/patram_syn.jpg" alt="Patram-Syn pipeline overview">
+            <p class="fig-caption" style="font-size:0.8rem; text-align:center;">
+              <strong>Patram-Syn overview:</strong> A five-stage persona-driven generation pipeline.
+            </p>
+          </div>
+        </div>
+        <div class="column is-6">
+          <h3 class="title is-3" style="margin-bottom: 1.5rem;">Persona-Driven Synthesis (Patram-Syn)</h3>
+          <p>
+            To evaluate VLM performance under strict layout controls, we introduce <strong>Patram-Syn</strong>,
+            a persona-driven synthetic data generation pipeline.
+            By conditioning content on <strong>200,000 synthesized Indian personas</strong>,
+            we produce realistic and culturally grounded tables, diagrams, and charts.
+          </p>
+          <div class="columns is-multiline" style="margin-top: 1.5rem;">
+            <div class="column is-6">
+              <div class="feature-card">
+                <h4><span class="icon has-text-primary"><i class="fas fa-users"></i></span> Persona Conditioning</h4>
+                <p>Generates content conditioned on roles like educators, public health officers, and accountants.</p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="feature-card">
+                <h4><span class="icon has-text-primary"><i class="fas fa-cloud-arrow-down"></i></span> Source-Aware Retrieval</h4>
+                <p>Retrieves background information from public Indian databases to keep visual assets factual.</p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="feature-card">
+                <h4><span class="icon has-text-primary"><i class="fas fa-code"></i></span> Multi-Engine Rendering</h4>
+                <p>Outputs plotting code in Matplotlib (charts), LaTeX (tables), and Mermaid (diagrams) for Indic fonts.</p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="feature-card">
+                <h4><span class="icon has-text-primary"><i class="fas fa-user-check"></i></span> Human Verification</h4>
+                <p>A team of 14 native-speaker experts reviews the layout, script rendering, and QA annotations.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tasks Section -->
+  <section class="section section-alt" id="tasks">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <h2 class="section-title">Tasks &amp; Evaluations</h2>
+          <p class="subtitle" style="margin-bottom: 3rem;">
+            Patram-Bench covers 52 distinct document understanding tasks spanning perception and reasoning.
+          </p>
+        </div>
+      </div>
+
+      <div class="columns is-vcentered">
+        <div class="column is-5">
+          <div class="motivation-box">
+            <h4 class="title is-4" style="color: #312e81; margin-bottom: 1rem;">Perception Tasks</h4>
+            <p style="margin-bottom: 1.5rem; font-size: 0.95rem; color: #1e1b4b;">
+              Evaluates visual and structural feature extraction.
+              Includes handwritten and printed <strong>OCR</strong>, multi-column <strong>layout detection</strong>, table cell localization, chart parsing, and PDF-to-Markdown document parsing.
+            </p>
+
+            <h4 class="title is-4" style="color: #312e81; margin-bottom: 1rem;">Reasoning Tasks</h4>
+            <p style="font-size: 0.95rem; color: #1e1b4b;">
+              Tests cognitive document understanding.
+              Includes multi-hop <strong>Document VQA</strong>, abstractive reasoning, arithmetic parsing on charts, and structural reasoning over diagrams. Evaluates <strong>cross-lingual transfer</strong>, code-mixed, and transliterated queries.
+            </p>
+          </div>
+        </div>
+        <div class="column is-7">
+          <div class="figure-container">
+            <img src="static/images/tasks_taxonomy.png" alt="Patram-Bench Task Taxonomy">
+            <p class="fig-caption" style="font-size: 0.8rem; text-align: center;">
+              <strong>Task taxonomy:</strong> Evaluation axes across OCR, segmentation, parsing, and multi-lingual VQA.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results Section -->
+  <section class="section" id="results">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <h2 class="section-title">Benchmark Results</h2>
+          <p class="subtitle" style="margin-bottom: 4rem;">
+            Large-scale unified evaluation of 29 vision-language models and specialized document processors.
+          </p>
+        </div>
+      </div>
+
+      <!-- Main Language Robustness Table -->
+      <h3 class="title is-4" style="margin-bottom: 1rem;"><span class="icon has-text-primary"><i class="fas fa-language"></i></span> Language Robustness (G-Eval Score)</h3>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
+        Performance comparison across English (en), five high-resource Indic languages (hi, bn, te, ta, mr), and five low-resource Indic languages (mni, sat, sd, ks, kok).
+      </p>
+      
+      <div class="table-container">
+        <table class="table is-striped is-hoverable is-fullwidth" id="robustness-table">
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>en</th>
+              <th>hi</th>
+              <th>bn</th>
+              <th>te</th>
+              <th>ta</th>
+              <th>mr</th>
+              <th>mni</th>
+              <th>sat</th>
+              <th>sd</th>
+              <th>ks</th>
+              <th>kok</th>
+              <th>Overall</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Closed Source -->
+            <tr class="group-header-row">
+              <td colspan="13">Closed Source VLMs</td>
+            </tr>
+            <tr class="ours-row">
+              <td>GPT-5</td>
+              <td>82</td>
+              <td>79</td>
+              <td>77</td>
+              <td>76</td>
+              <td>75</td>
+              <td>76</td>
+              <td>62</td>
+              <td>50</td>
+              <td>48</td>
+              <td>72</td>
+              <td>67</td>
+              <td>70</td>
+            </tr>
+            <tr>
+              <td>Gemini-3-Pro</td>
+              <td>74</td>
+              <td>69</td>
+              <td>66</td>
+              <td>66</td>
+              <td>65</td>
+              <td>66</td>
+              <td>56</td>
+              <td>43</td>
+              <td>41</td>
+              <td>60</td>
+              <td>58</td>
+              <td>61</td>
+            </tr>
+            <tr>
+              <td>Claude-4.0-Sonnet</td>
+              <td>71</td>
+              <td>67</td>
+              <td>63</td>
+              <td>64</td>
+              <td>63</td>
+              <td>64</td>
+              <td>55</td>
+              <td>46</td>
+              <td>42</td>
+              <td>59</td>
+              <td>57</td>
+              <td>61</td>
+            </tr>
+
+            <!-- Open Source Large -->
+            <tr class="group-header-row">
+              <td colspan="13">Open Source VLMs - Large (&gt; 100B)</td>
+            </tr>
+            <tr>
+              <td>Qwen3-VL-235B-A22B</td>
+              <td>75</td>
+              <td>71</td>
+              <td>69</td>
+              <td>70</td>
+              <td>69</td>
+              <td>70</td>
+              <td>61</td>
+              <td>48</td>
+              <td>46</td>
+              <td>62</td>
+              <td>60</td>
+              <td>64</td>
+            </tr>
+            <tr>
+              <td>InternVL3.5-241B-A28B</td>
+              <td>71</td>
+              <td>67</td>
+              <td>65</td>
+              <td>66</td>
+              <td>65</td>
+              <td>66</td>
+              <td>54</td>
+              <td>43</td>
+              <td>41</td>
+              <td>58</td>
+              <td>56</td>
+              <td>60</td>
+            </tr>
+            
+            <!-- Collapsible Section for Open Source Medium/Small -->
+            <tr class="group-header-row collapsed-row" style="display: none;">
+              <td colspan="13">Open Source VLMs - Medium (27B - 100B)</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>Qwen3-VL-30B-A3B</td>
+              <td>73</td>
+              <td>69</td>
+              <td>67</td>
+              <td>68</td>
+              <td>67</td>
+              <td>68</td>
+              <td>59</td>
+              <td>46</td>
+              <td>44</td>
+              <td>61</td>
+              <td>59</td>
+              <td>62</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>Qwen3-VL-32B</td>
+              <td>69</td>
+              <td>65</td>
+              <td>63</td>
+              <td>64</td>
+              <td>63</td>
+              <td>64</td>
+              <td>56</td>
+              <td>44</td>
+              <td>42</td>
+              <td>60</td>
+              <td>58</td>
+              <td>61</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>Gemma-3-27B</td>
+              <td>66</td>
+              <td>62</td>
+              <td>60</td>
+              <td>61</td>
+              <td>60</td>
+              <td>61</td>
+              <td>52</td>
+              <td>40</td>
+              <td>38</td>
+              <td>55</td>
+              <td>53</td>
+              <td>57</td>
+            </tr>
+
+            <tr class="group-header-row collapsed-row" style="display: none;">
+              <td colspan="13">Open Source VLMs - Small (&lt; 14B)</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>Qwen3-VL-8B</td>
+              <td>65</td>
+              <td>61</td>
+              <td>59</td>
+              <td>60</td>
+              <td>59</td>
+              <td>60</td>
+              <td>52</td>
+              <td>41</td>
+              <td>39</td>
+              <td>57</td>
+              <td>55</td>
+              <td>58</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>Gemma-3-12B</td>
+              <td>62</td>
+              <td>58</td>
+              <td>56</td>
+              <td>57</td>
+              <td>56</td>
+              <td>57</td>
+              <td>49</td>
+              <td>38</td>
+              <td>36</td>
+              <td>52</td>
+              <td>50</td>
+              <td>54</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>Molmo-2-13B</td>
+              <td>63</td>
+              <td>59</td>
+              <td>57</td>
+              <td>58</td>
+              <td>57</td>
+              <td>58</td>
+              <td>50</td>
+              <td>39</td>
+              <td>37</td>
+              <td>53</td>
+              <td>51</td>
+              <td>55</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>GLM-4.5V-9B</td>
+              <td>60</td>
+              <td>56</td>
+              <td>54</td>
+              <td>55</td>
+              <td>54</td>
+              <td>55</td>
+              <td>47</td>
+              <td>36</td>
+              <td>34</td>
+              <td>50</td>
+              <td>48</td>
+              <td>52</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>InternVL3.5-8B</td>
+              <td>61</td>
+              <td>57</td>
+              <td>55</td>
+              <td>56</td>
+              <td>55</td>
+              <td>56</td>
+              <td>48</td>
+              <td>37</td>
+              <td>35</td>
+              <td>51</td>
+              <td>49</td>
+              <td>52</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>InternVL3.5-1B</td>
+              <td>53</td>
+              <td>49</td>
+              <td>47</td>
+              <td>48</td>
+              <td>47</td>
+              <td>48</td>
+              <td>40</td>
+              <td>31</td>
+              <td>30</td>
+              <td>45</td>
+              <td>43</td>
+              <td>46</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>PANGEA</td>
+              <td>59</td>
+              <td>55</td>
+              <td>53</td>
+              <td>54</td>
+              <td>53</td>
+              <td>54</td>
+              <td>46</td>
+              <td>35</td>
+              <td>33</td>
+              <td>49</td>
+              <td>47</td>
+              <td>51</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>Chitrarth</td>
+              <td>58</td>
+              <td>54</td>
+              <td>52</td>
+              <td>53</td>
+              <td>52</td>
+              <td>53</td>
+              <td>45</td>
+              <td>34</td>
+              <td>32</td>
+              <td>48</td>
+              <td>46</td>
+              <td>50</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>MiniCPM2-2.6V</td>
+              <td>56</td>
+              <td>52</td>
+              <td>50</td>
+              <td>51</td>
+              <td>50</td>
+              <td>51</td>
+              <td>44</td>
+              <td>33</td>
+              <td>31</td>
+              <td>47</td>
+              <td>45</td>
+              <td>49</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>Molmo-1-7B</td>
+              <td>57</td>
+              <td>53</td>
+              <td>51</td>
+              <td>52</td>
+              <td>51</td>
+              <td>52</td>
+              <td>45</td>
+              <td>34</td>
+              <td>32</td>
+              <td>48</td>
+              <td>46</td>
+              <td>49</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>LLaVA-1.6-13B</td>
+              <td>61</td>
+              <td>57</td>
+              <td>55</td>
+              <td>56</td>
+              <td>55</td>
+              <td>56</td>
+              <td>48</td>
+              <td>37</td>
+              <td>35</td>
+              <td>51</td>
+              <td>49</td>
+              <td>53</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>Pixtral-12B</td>
+              <td>62</td>
+              <td>58</td>
+              <td>56</td>
+              <td>57</td>
+              <td>56</td>
+              <td>57</td>
+              <td>49</td>
+              <td>38</td>
+              <td>36</td>
+              <td>52</td>
+              <td>50</td>
+              <td>54</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>Maya</td>
+              <td>57</td>
+              <td>53</td>
+              <td>51</td>
+              <td>52</td>
+              <td>51</td>
+              <td>52</td>
+              <td>44</td>
+              <td>33</td>
+              <td>31</td>
+              <td>47</td>
+              <td>45</td>
+              <td>49</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>Palo</td>
+              <td>56</td>
+              <td>52</td>
+              <td>50</td>
+              <td>51</td>
+              <td>50</td>
+              <td>51</td>
+              <td>43</td>
+              <td>32</td>
+              <td>30</td>
+              <td>46</td>
+              <td>44</td>
+              <td>48</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>CogVLM-17B</td>
+              <td>58</td>
+              <td>54</td>
+              <td>52</td>
+              <td>53</td>
+              <td>52</td>
+              <td>53</td>
+              <td>45</td>
+              <td>34</td>
+              <td>32</td>
+              <td>48</td>
+              <td>46</td>
+              <td>50</td>
+            </tr>
+            <tr class="collapsed-row" style="display: none;">
+              <td>LLaMA4-Scout</td>
+              <td>68</td>
+              <td>64</td>
+              <td>62</td>
+              <td>63</td>
+              <td>62</td>
+              <td>63</td>
+              <td>51</td>
+              <td>40</td>
+              <td>38</td>
+              <td>55</td>
+              <td>53</td>
+              <td>57</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="button is-light table-toggle-btn" id="toggle-table-btn" onclick="toggleRobustnessTable()">
+        Show all 25+ evaluated models
+      </button>
+
+      <!-- Language & Task Plots side by side -->
+      <div class="columns" style="margin-top: 3rem;">
+        <div class="column is-6">
+          <div class="figure-container">
+            <h4 class="title is-5 has-text-centered" style="margin-bottom: 1rem;">Language Robustness Trends</h4>
+            <img src="static/images/lang_robustness.png" alt="Language robustness trend plot">
+            <p class="fig-caption" style="font-size:0.85rem;">
+              <strong>RQ2 Analysis:</strong> Performance degradation as language resources drop.
+              Closed-source models (orange) exhibit stability, whereas open-source models show sharp drops in low-resource Indic languages.
+            </p>
+          </div>
+        </div>
+        <div class="column is-6">
+          <div class="figure-container">
+            <h4 class="title is-5 has-text-centered" style="margin-bottom: 1rem;">Task-Wise VLM Performance</h4>
+            <img src="static/images/task_wise.png" alt="Task-wise performance plot">
+            <p class="fig-caption" style="font-size:0.85rem;">
+              <strong>RQ1 Analysis:</strong> Model comparison across 8 document families.
+              Gaps are wide in document parsing (DP) and linguistic robustness (LR), with specialist models outperforming general VLMs on layout and text detection.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Other Diagnostic Tables in a tab/grid structure -->
+      <div class="columns" style="margin-top: 3rem;">
+        <!-- Left Column: Task Sensitivity & DUCLI -->
+        <div class="column is-6">
+          <div class="content-box" style="height: 100%;">
+            <h4 class="title is-4"><span class="icon has-text-primary"><i class="fas fa-circle-nodes"></i></span> Task Sensitivity (RQ1)</h4>
+            <div class="table-container" style="margin-top: 1rem;">
+              <table class="table is-striped is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>TR</th>
+                    <th>DS</th>
+                    <th>DP</th>
+                    <th>EP</th>
+                    <th>TDV</th>
+                    <th>SER</th>
+                    <th>AKR</th>
+                    <th>LR</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="ours-row">
+                    <td>Best</td>
+                    <td>G3P</td>
+                    <td>iDLP</td>
+                    <td>C4S</td>
+                    <td>G3P</td>
+                    <td>C4S</td>
+                    <td>GPT5</td>
+                    <td>GPT5</td>
+                    <td>G3P</td>
+                  </tr>
+                  <tr>
+                    <td>Best OS</td>
+                    <td>Chan</td>
+                    <td>iDLP</td>
+                    <td>Mrkr</td>
+                    <td>QW32</td>
+                    <td>QW32</td>
+                    <td>QW235</td>
+                    <td>GLM4</td>
+                    <td>QW30</td>
+                  </tr>
+                  <tr>
+                    <td>Worst</td>
+                    <td>LLaVA</td>
+                    <td>PPDoc</td>
+                    <td>LLaVA</td>
+                    <td>Pix12</td>
+                    <td>LLaVA</td>
+                    <td>IVL8</td>
+                    <td>LLaVA</td>
+                    <td>Mol8</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+              TR: Text Recognition, DS: Document Segmentation, DP: Document Parsing, EP: Element Parsing | TDV: Text-Centric DocVQA, SER: Structured Element Reasoning, AKR: Analytical/Knowledge Reasoning, LR: Linguistic Robustness.
+            </p>
+
+            <h4 class="title is-4" style="margin-top: 2rem;"><span class="icon has-text-primary"><i class="fas fa-arrows-spin"></i></span> Cross-Lingual (DUCLI) &amp; Script Robustness (SRS)</h4>
+            <div class="table-container" style="margin-top: 1rem;">
+              <table class="table is-striped is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Metric</th>
+                    <th>Best Closed</th>
+                    <th>Best Open-Source</th>
+                    <th>Worst</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>DUCLI</strong></td>
+                    <td>Claude-4-Sonnet</td>
+                    <td>Gemma-3-12B</td>
+                    <td>LLaVA-1.6</td>
+                  </tr>
+                  <tr>
+                    <td><strong>SRS</strong></td>
+                    <td>Gemini-3-Pro</td>
+                    <td>Gemma-3-12B</td>
+                    <td>Pixtral-12B</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+              <strong>DUCLI:</strong> Measures retention relative to monolingual English. <br>
+              <strong>SRS:</strong> Measures invariance to code-mixing and transliteration.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right Column: Cross Lingual VQA ANLS -->
+        <div class="column is-6">
+          <div class="content-box" style="height: 100%;">
+            <h4 class="title is-4"><span class="icon has-text-primary"><i class="fas fa-globe"></i></span> Cross-Lingual Question-Document Performance (ANLS)</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">
+              Evaluating models where question and document languages differ (High-Resource vs Low-Resource Indic).
+            </p>
+            <div class="table-container">
+              <table class="table is-striped is-fullwidth">
+                <thead>
+                  <tr>
+                    <th rowspan="2">Model</th>
+                    <th colspan="3">English Doc</th>
+                    <th colspan="5">Indic Doc</th>
+                  </tr>
+                  <tr>
+                    <th>Q: EN</th>
+                    <th>Q: HR</th>
+                    <th>Q: LR</th>
+                    <th>Q: EN</th>
+                    <th>Same-HR</th>
+                    <th>Same-LR</th>
+                    <th>Diff-HR</th>
+                    <th>Diff-LR</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="ours-row">
+                    <td>Gemma-27B</td>
+                    <td>0.323</td>
+                    <td>0.327</td>
+                    <td>0.337</td>
+                    <td>0.193</td>
+                    <td>0.211</td>
+                    <td>0.161</td>
+                    <td>0.181</td>
+                    <td>0.190</td>
+                  </tr>
+                  <tr>
+                    <td>Qwen3-VL-32B</td>
+                    <td>0.289</td>
+                    <td>0.272</td>
+                    <td>0.289</td>
+                    <td>0.197</td>
+                    <td>0.169</td>
+                    <td>0.143</td>
+                    <td>0.143</td>
+                    <td>0.138</td>
+                  </tr>
+                  <tr>
+                    <td>LLaMA-4 Scout</td>
+                    <td>0.288</td>
+                    <td>0.279</td>
+                    <td>0.284</td>
+                    <td>0.184</td>
+                    <td>0.213</td>
+                    <td>0.173</td>
+                    <td>0.166</td>
+                    <td>0.175</td>
+                  </tr>
+                  <tr>
+                    <td>Qwen3-VL-30B</td>
+                    <td>0.273</td>
+                    <td>0.226</td>
+                    <td>0.237</td>
+                    <td>0.188</td>
+                    <td>0.161</td>
+                    <td>0.159</td>
+                    <td>0.133</td>
+                    <td>0.128</td>
+                  </tr>
+                  <tr>
+                    <td>InternVL-38B</td>
+                    <td>0.194</td>
+                    <td>0.181</td>
+                    <td>0.186</td>
+                    <td>0.075</td>
+                    <td>0.054</td>
+                    <td>0.064</td>
+                    <td>0.075</td>
+                    <td>0.077</td>
+                  </tr>
+                  <tr>
+                    <td>Pixtral-12B</td>
+                    <td>0.183</td>
+                    <td>0.171</td>
+                    <td>0.174</td>
+                    <td>0.081</td>
+                    <td>0.049</td>
+                    <td>0.068</td>
+                    <td>0.077</td>
+                    <td>0.067</td>
+                  </tr>
+                  <tr>
+                    <td>LLaVA-v1.6</td>
+                    <td>0.112</td>
+                    <td>0.079</td>
+                    <td>0.066</td>
+                    <td>0.054</td>
+                    <td>0.032</td>
+                    <td>0.056</td>
+                    <td>0.042</td>
+                    <td>0.031</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <h4 class="title is-4" style="margin-top: 1.5rem;"><span class="icon has-text-primary"><i class="fas fa-eye-slash"></i></span> Vision-Language Reliance &amp; Bias</h4>
+            <div class="table-container" style="margin-top: 1.05rem;">
+              <table class="table is-striped is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Model Ordering (Lower is better visual reliance)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="ours-row">
+                    <td>Best Closed</td>
+                    <td>Gemini-3-Pro &gt; Claude-4-Sonnet</td>
+                  </tr>
+                  <tr>
+                    <td>Best Open</td>
+                    <td>Qwen3-VL-32B &gt; Qwen3-VL-30B &gt; Gemma-3-27B</td>
+                  </tr>
+                  <tr>
+                    <td>Worst (Bias-heavy)</td>
+                    <td>Qwen3-VL-235B &gt; InternVL3.5-241B</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+              Linguistic bias indicates models relying on text priors to answer, bypassing document visuals.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BibTeX Section -->
+  <section class="section section-alt" id="bibtex">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <h2 class="section-title has-text-centered">BibTeX</h2>
+          <p class="has-text-centered" style="color: var(--text-muted); margin-bottom: 2rem;">
+            If you find our work or dataset useful in your research, please consider citing:
+          </p>
+          
+          <div class="bibtex-wrap">
+            <div class="bibtex-bar">
+              <span>patram_bench_2026.bib</span>
+              <button onclick="copyBibtex(this)">
+                <span class="icon"><i class="far fa-copy"></i></span>&ensp;<span>Copy</span>
+              </button>
+            </div>
+            <pre class="bibtex-code" id="bibtex-text">@inproceedings{patrambench2026,
+  title     = {Patram-Bench: A Multi-task, Multi-domain and Multi-lingual Benchmark for Indian Document Image Understanding},
+  author    = {Author, First and Author, Second and Author, Third and Author, Fourth and Author, Fifth},
+  booktitle = {Proceedings of the International Conference on Document Analysis and Recognition (ICDAR)},
+  year      = {2026},
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-4">
+          <h4 class="title is-5">Patram-Bench</h4>
+          <p style="font-size: 0.9rem; color: #94a3b8; line-height: 1.6;">
+            A unified benchmarking initiative to diagnose, stress-test, and advance vision-language models for Indian multilingual document intelligence.
+          </p>
+        </div>
+        <div class="column is-4">
+          <h4 class="title is-5">Ecosystem Resources</h4>
+          <ul style="font-size: 0.9rem; line-height: 2;">
+            <li><a href="https://github.com/patrambench/patrambench" target="_blank"><span class="icon"><i class="fab fa-github"></i></span> Github Code</a></li>
+            <li><a href="https://huggingface.co/datasets/patrambench/patrambench" target="_blank"><span class="icon">🤗</span> HuggingFace Datasets</a></li>
+            <li><a href="#"><span class="icon"><i class="fas fa-file-pdf"></i></span> ICDAR 2026 Paper</a></li>
+          </ul>
+        </div>
+        <div class="column is-4">
+          <h4 class="title is-5">Supported Providers</h4>
+          <div class="columns is-mobile is-multiline" style="gap: 1rem; align-items: center; margin-top: 0.5rem;">
+            <div class="column is-narrow" style="padding: 0.25rem;">
+              <img src="static/images/logos/gemini-logo.png" alt="Gemini Logo" style="height: 24px; filter: grayscale(1) brightness(2);">
+            </div>
+            <div class="column is-narrow" style="padding: 0.25rem;">
+              <img src="static/images/logos/openai-logo.png" alt="OpenAI Logo" style="height: 24px; filter: grayscale(1) brightness(2);">
+            </div>
+            <div class="column is-narrow" style="padding: 0.25rem;">
+              <img src="static/images/logos/claude-logo.png" alt="Claude Logo" style="height: 24px; filter: grayscale(1) brightness(2);">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content has-text-centered footer-bottom">
+        <p>
+          This website is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+        </p>
+        <p style="margin-top: 0.5rem; color: #64748b; font-size: 0.8rem;">
+          Template adapted from <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" style="color: #94a3b8;">Academic Project Page Template</a>.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Navbar Burger Trigger
+    document.addEventListener('DOMContentLoaded', () => {
+      const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+      if ($navbarBurgers.length > 0) {
+        $navbarBurgers.forEach( el => {
+          el.addEventListener('click', () => {
+            const target = el.dataset.target;
+            const $target = document.getElementById(target);
+            el.classList.toggle('is-active');
+            $target.classList.toggle('is-active');
+          });
+        });
+      }
+    });
+
+    // Toggle Robustness Table Rows
+    function toggleRobustnessTable() {
+      const rows = document.querySelectorAll('.collapsed-row');
+      const btn = document.getElementById('toggle-table-btn');
+      
+      let isCollapsed = false;
+      if (rows.length > 0) {
+        isCollapsed = (rows[0].style.display === 'none');
+      }
+
+      rows.forEach(row => {
+        row.style.display = isCollapsed ? 'table-row' : 'none';
+      });
+
+      btn.innerText = isCollapsed ? 'Show top-performing models only' : 'Show all 25+ evaluated models';
+    }
+
+    // Copy BibTeX Functionality
+    function copyBibtex(btn) {
+      const codeText = document.getElementById('bibtex-text').innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        const spanText = btn.querySelector('span:not(.icon)');
+        const icon = btn.querySelector('.icon i');
+        
+        spanText.innerText = 'Copied!';
+        icon.className = 'fas fa-check';
+        
+        setTimeout(() => {
+          spanText.innerText = 'Copy';
+          icon.className = 'far fa-copy';
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+    }
+
+    // Smooth Scrolling for Nav Links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+          e.preventDefault();
+          targetEl.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+
+</body>
+
+</html>

@@ -514,6 +514,70 @@
       font-size: 0.85rem;
     }
 
+    /* ── Institution logos ── */
+    .institution-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+      padding: 1.25rem 1.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+    }
+
+    .institution-logos a {
+      display: inline-flex;
+      align-items: center;
+      opacity: 0.9;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .institution-logos a:hover {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
+    .institution-logos img {
+      height: 60px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .footer-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-logos a {
+      display: inline-flex;
+      align-items: center;
+      opacity: 0.7;
+      transition: all 0.2s ease;
+    }
+
+    .footer-logos a:hover {
+      opacity: 1;
+    }
+
+    .footer-logos img {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      filter: grayscale(1) brightness(1.5);
+      transition: all 0.2s ease;
+    }
+
+    .footer-logos a:hover img {
+      filter: none;
+    }
+
     /* ── Responsive adjustments ── */
     @media (max-width: 768px) {
       .publication-header .title {
@@ -521,6 +585,9 @@
       }
       .publication-header {
         padding: 3rem 1.5rem 2.5rem;
+      }
+      .institution-logos {
+        gap: 1.5rem;
       }
     }
   </style>
@@ -568,34 +635,33 @@
           A Comprehensive Evaluation Protocol for Vision-Language Models in Diverse Document Ecosystems
         </p>
 
-        <!-- Placeholders for Authors -->
+        <!-- Authors -->
         <div class="publication-authors" style="margin-top: 2rem;">
           <span class="author-block">
-            <a href="#">Anonymous Author 1</a><sup>1,*</sup>,
+            <a href="mailto:anirudh.srinivasan@bharatgen.com">Anirudh Srinivasan</a><sup>1,*</sup>,
           </span>
           <span class="author-block">
-            <a href="#">Anonymous Author 2</a><sup>2,*</sup>,
+            <a href="mailto:pratyush.jena@research.iiit.ac.in">Pratyush Jena</a><sup>2,*</sup>,
           </span>
           <span class="author-block">
-            <a href="#">Anonymous Author 3</a><sup>1,†</sup>,
+            <a href="mailto:arya.topale@students.iiit.ac.in">Arya Topale</a><sup>2,†</sup>,
           </span>
           <span class="author-block">
-            <a href="#">Anonymous Author 4</a><sup>3,†</sup>,
+            <a href="mailto:venkat.kesav@bharatgen.com">Venkat Venna</a><sup>1,†</sup>,
           </span>
           <span class="author-block">
-            <a href="#">Anonymous Author 5</a><sup>1,2</sup>
+            <a href="mailto:ravi.kiran@iiit.ac.in">Ravi Kiran Sarvadevabhatla</a><sup>2</sup>
           </span>
         </div>
 
-        <!-- Placeholders for Institutions -->
+        <!-- Institutions -->
         <div class="affiliations">
-          <span><sup>1</sup> Department of Artificial Intelligence &amp; Computer Science</span>
-          <span><sup>2</sup> Division of Electrical Engineering</span>
-          <span><sup>3</sup> Center for Indian Language Technologies</span>
+          <span><sup>1</sup> BharatGen</span>
+          <span><sup>2</sup> IIIT Hyderabad</span>
         </div>
 
         <div class="author-notes">
-          <sup>*</sup> Equal contribution &nbsp;&nbsp;&nbsp;&nbsp; <sup>†</sup> Equal contribution / Project Leads
+          <sup>*</sup> Equal Contribution (First Authors) &nbsp;&nbsp;&nbsp;&nbsp; <sup>†</sup> Equal Contribution (Second Authors)
         </div>
 
         <!-- Links Buttons -->
@@ -615,6 +681,19 @@
           <a href="#" class="button is-primary-accent">
             <span class="icon"><i class="fas fa-database"></i></span>
             <span>Download Data</span>
+          </a>
+        </div>
+
+        <!-- Institution / Conference Logos -->
+        <div class="institution-logos">
+          <a href="https://icdar2026.org/" target="_blank" rel="noopener noreferrer" title="ICDAR 2026">
+            <img src="static/images/logos/icdar-logo.png" alt="ICDAR 2026 logo" />
+          </a>
+          <a href="https://www.iiit.ac.in/" target="_blank" rel="noopener noreferrer" title="IIIT Hyderabad">
+            <img src="static/images/logos/IIITH_Logo.jpg" alt="IIIT Hyderabad logo" />
+          </a>
+          <a href="https://bharatgen.com/" target="_blank" rel="noopener noreferrer" title="BharatGen">
+            <img src="static/images/logos/logo_bharatgen.png" alt="BharatGen logo" />
           </a>
         </div>
       </div>
@@ -1538,7 +1617,7 @@
             </div>
             <pre class="bibtex-code" id="bibtex-text">@inproceedings{patrambench2026,
   title     = {Patram-Bench: A Multi-task, Multi-domain and Multi-lingual Benchmark for Indian Document Image Understanding},
-  author    = {Author, First and Author, Second and Author, Third and Author, Fourth and Author, Fifth},
+  author    = {Srinivasan, Anirudh and Jena, Pratyush and Topale, Arya and Venna, Venkat and Sarvadevabhatla, Ravi Kiran},
   booktitle = {Proceedings of the International Conference on Document Analysis and Recognition (ICDAR)},
   year      = {2026},
 }</pre>
@@ -1582,7 +1661,33 @@
         </div>
       </div>
 
-      <div class="content has-text-centered footer-bottom">
+      <!-- Footer Logos -->
+      <div class="footer-logos">
+        <a href="https://icdar2026.org/" target="_blank" rel="noopener noreferrer" title="ICDAR 2026">
+          <img src="static/images/logos/icdar-logo.png" alt="ICDAR 2026 logo" />
+        </a>
+        <a href="https://www.iiit.ac.in/" target="_blank" rel="noopener noreferrer" title="IIIT Hyderabad">
+          <img src="static/images/logos/IIITH_Logo.jpg" alt="IIIT Hyderabad logo" />
+        </a>
+        <a href="https://bharatgen.com/" target="_blank" rel="noopener noreferrer" title="BharatGen">
+          <img src="static/images/logos/logo_bharatgen.png" alt="BharatGen logo" />
+        </a>
+      </div>
+
+      <!-- Visitor Map -->
+      <div style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+        <p style="font-size: 0.78rem; color: #64748b; margin-bottom: 0.6rem; 
+                  letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; text-align: center;">
+          Visitor Map
+        </p>
+        <div style="display: flex; justify-content: center;">
+          <a href="https://info.flagcounter.com/Bz6m">
+            <img src="https://s01.flagcounter.com/map/Bz6m/size_s/txt_000000/border_CCCCCC/pageviews_0/viewers_0/flags_0/" alt="Flag Counter" border="0" />
+          </a>
+        </div>
+      </div>
+
+      <div class="content has-text-centered footer-bottom" style="margin-top: 2rem;">
         <p>
           This website is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
         </p>
